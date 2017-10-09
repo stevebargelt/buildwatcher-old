@@ -1,3 +1,7 @@
-/vendor
-/buildwatcher
 .DS_Store
+bin
+vendor
+buildwatcher.db
+*.deb
+dist
+buildwatcher

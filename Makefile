@@ -1,16 +1,21 @@
 SOURCEDIR=.
 SOURCES = $(shell find $(SOURCEDIR) -name '*.go')
 VERSION=$(shell git describe --always --tags)
-BINARY=buildwatcher
+BINARY=bin/buildwatcher
 
 .PHONY:pi
 pi:
-	env GOOS=linux GOARCH=arm go build -o $(BINARY) -ldflags "-s -w -X main.Version=$(VERSION)" *.go
+	env GOOS=linux GOARCH=arm go build -o $(BINARY) -ldflags "-s -w -X main.Version=$(VERSION)" commands/*.go
+	cp build/buildwatcher.yml bin/config.yml	
 
 .PHONY:pi-zero
 pi-zero:
 	env GOARM=6 GOOS=linux GOARCH=arm go build -o $(BINARY) -ldflags "-s -w -X main.Version=$(VERSION)" *.go
 
+.PHONY:deploy
+deploy:
+	scp bin/buildwatcher pi@192.168.1.6:buildwatcher
+	scp bin/config.yml pi@192.168.1.6:config.yml
 test:
 	go test -cover -v -race ./...
 
@@ -26,26 +31,22 @@ test:
 # 	go get -u github.com/dustin/go-humanize
 # 	go get -u github.com/ranjib/adafruitio
 
-# .PHONY: vet
-# vet:
-# 	go vet ./...
+.PHONY: vet
+vet:
+	go vet ./...
 
 # .PHONY: build
 # build: clean go-get test bin
 
 # .PHONY: deb
 # deb:
-# 	mkdir -p dist/var/lib/reef-pi/assets dist/usr/bin dist/etc/reef-pi
-# 	cp bin/reef-pi dist/usr/bin/reef-pi
-# 	cp assets/bootstrap.min.css dist/var/lib/reef-pi/assets/bootstrap.min.css
-# 	cp assets/home.html dist/var/lib/reef-pi/assets/home.html
-# 	cp assets/login.html dist/var/lib/reef-pi/assets/login.html
-# 	cp assets/ui.js dist/var/lib/reef-pi/assets/ui.js
-# 	cp build/reef-pi.yml dist/etc/reef-pi/config.yml
-# 	bundle exec fpm -t deb -s dir -a armhf -n reef-pi -v $(VERSION) -m ranjib@linux.com --deb-systemd build/reef-pi.service -C dist  -p reef-pi-$(VERSION).deb .
+# 	mkdir -p dist/var/lib/buildwatcher/assets dist/usr/bin dist/etc/buildwatcher
+# 	cp bin/buildwatcher dist/usr/bin/buildwatcher
+# 	cp build/buildwatcher.yml dist/etc/buildwatcher/config.yml
+# 	bundle exec fpm -t deb -s dir -a armhf -n buildwatcher -v $(VERSION) -m steve@bargelt.com --deb-systemd build/buildwatcher.service -C dist  -p buildwatcher-$(VERSION).deb .
 
-# .PHONY: clean
-# clean:
-# 	-rm -rf *.deb
-# 	-rm -rf dist
-# 	-rm *.db
+ .PHONY: clean
+ clean:
+	-rm -rf *.deb
+	-rm -rf dist
+	-rm *.db
