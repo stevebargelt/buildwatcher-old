@@ -26,12 +26,20 @@ func NewAPIHandler(c *controller.Controller) http.Handler {
 		controller: c,
 	}
 
+	// Lights
 	//router.HandleFunc("/api/lights", handler.AddLight).Methods("POST")
 	router.HandleFunc("/api/lights/{id}/on", handler.LightOn).Methods("POST")
 	router.HandleFunc("/api/lights/{id}/off", handler.LightOff).Methods("POST")
-	router.HandleFunc("/api/lights/{color}", handler.GetLight).Methods("Get")
-	router.HandleFunc("/api/lights", handler.GetLights).Methods("Get")
+	router.HandleFunc("/api/lights/{color}", handler.GetLight).Methods("GET")
+	router.HandleFunc("/api/lights", handler.GetLights).Methods("GET")
 	//router.HandleFunc("/api/shutdown", s.ShutdownHandler)
+
+	// Jobs
+	router.HandleFunc("/api/jobs/{id}", handler.GetJob).Methods("GET")
+	router.HandleFunc("/api/jobs", handler.ListJobs).Methods("GET")
+	router.HandleFunc("/api/jobs", handler.CreateJob).Methods("POST")
+	router.HandleFunc("/api/jobs/{id}", handler.UpdateJob).Methods("PUT")
+	router.HandleFunc("/api/jobs/{id}", handler.DeleteJob).Methods("DELETE")
 
 	return router
 }

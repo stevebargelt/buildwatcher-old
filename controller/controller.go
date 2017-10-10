@@ -36,7 +36,7 @@ func New(config Config) (*Controller, error) {
 func (c *Controller) CreateBuckets() error {
 	buckets := []string{
 		LightsBucket,
-		// JobBucket,
+		JobBucket,
 		UptimeBucket,
 	}
 	for _, bucket := range buckets {
@@ -54,9 +54,9 @@ func (c *Controller) Start() error {
 	c.logStartTime()
 	c.state.Bootup()
 	c.cronRunner.Start()
-	// if err := c.loadAllJobs(); err != nil {
-	// 	return err
-	// }
+	if err := c.loadAllJobs(); err != nil {
+		return err
+	}
 	log.Println("Started Controller")
 	return nil
 }

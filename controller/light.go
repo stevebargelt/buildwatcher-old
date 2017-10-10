@@ -37,21 +37,21 @@ func (c *Controller) GetLights() (*[]interface{}, error) {
 	return &list, nil
 }
 
-// func (c *Controller) ConfigureLight(id string, on bool, value int) error {
+func (c *Controller) ConfigureLight(id string, on bool, value int) error {
 
-// 	l, ok := c.config.Lights[id]
-// 	if !ok {
-// 		return fmt.Errorf("Light named: '%s' does noy exist", id)
-// 	}
+	l, ok := c.config.Lights[id]
+	if !ok {
+		return fmt.Errorf("Light named: '%s' does noy exist", id)
+	}
 
-// 	if c.config.DevMode {
-// 		log.Println("Dev mode on. Skipping:", id, "On:", on, "Value:", value)
-// 		return nil
-// 	}
+	if c.config.DevMode {
+		log.Println("Dev mode on. Skipping:", id, "On:", on, "Value:", value)
+		return nil
+	}
 
-// 	return c.doSwitching(l.GPIO, on)
+	return c.doSwitching(l.GPIO, on)
 
-// }
+}
 
 //LightOn : Turns a light on through GPIO
 func (c *Controller) LightOn(id string) error {
