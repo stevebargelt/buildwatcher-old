@@ -12,13 +12,12 @@ import (
 	_ "github.com/kidoman/embd/host/rpi" // This loads the RPi driver
 	"github.com/stevebargelt/buildwatcher/api"
 	"github.com/stevebargelt/buildwatcher/controller"
+	"github.com/stevebargelt/buildwatcher/slack"
 )
 
 var Version string
 
 func main() {
-
-	//api.Lights = make(map[string]*api.Light)
 
 	//create your file with desired read/write permissions
 	f, err := os.OpenFile("buildwatcher.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
@@ -27,12 +26,6 @@ func main() {
 	}
 	defer f.Close()
 	log.SetOutput(f)
-
-	// log.Print("Starting embd...")
-	// if err := embd.InitGPIO(); err != nil {
-	// 	panic(err)
-	// }
-	// defer embd.CloseGPIO()
 
 	configFile := flag.String("config", "", "Build Watcher configuration file path")
 	version := flag.Bool("version", false, "Print version information")
@@ -62,6 +55,8 @@ func main() {
 		}
 		config = conf
 	}
+
+	// Initialize the controller
 	c, err := controller.New(config.Controller)
 	if err != nil {
 		log.Fatal("Failed to initialize controller. ERROR:", err)
@@ -69,9 +64,17 @@ func main() {
 	if err := c.Start(); err != nil {
 		log.Fatal(err)
 	}
+
+	// Initialize the Slack controller
+	sl := slack.NewSlack(c, config.Slack)
+	go sl.StartSlack()
+	log.Println("Starting Slack subsystem")
+
+	//Initialize the API server
 	if err := api.SetupServer(config.API, c); err != nil {
 		log.Fatal("ERROR:", err)
 	}
+
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, os.Interrupt, syscall.SIGUSR2)
 	for {
@@ -80,6 +83,7 @@ func main() {
 			switch s {
 			case os.Interrupt:
 				c.Stop()
+				sl.Stop()
 				return
 				// case syscall.SIGUSR2:
 				// 	c.DumpTelemetry()

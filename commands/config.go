@@ -6,17 +6,20 @@ import (
 	"github.com/kidoman/embd"
 	"github.com/stevebargelt/buildwatcher/api"
 	"github.com/stevebargelt/buildwatcher/controller"
+	"github.com/stevebargelt/buildwatcher/slack"
 	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
 	Controller controller.Config `yaml:"controller"`
 	API        api.ServerConfig  `yaml:"api"`
+	Slack      slack.Config      `yaml:"slack"`
 }
 
 var DefaultConfig = Config{
 	Controller: controller.DefaultConfig,
 	API:        api.DefaultConfig,
+	Slack:      slack.DefaultConfig,
 }
 
 func ParseConfig(filename string) (*Config, error) {
@@ -28,6 +31,8 @@ func ParseConfig(filename string) (*Config, error) {
 	if err := yaml.Unmarshal(content, &c); err != nil {
 		return nil, err
 	}
+
+	// add the embd digital pins for each light that is configured
 	for k, l := range c.Controller.Lights {
 		l.ID = k
 		c.Controller.Lights[l.ID] = l

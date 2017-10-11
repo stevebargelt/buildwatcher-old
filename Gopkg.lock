@@ -2,12 +2,6 @@
 
 
 [[projects]]
-  name = "github.com/bndr/gojenkins"
-  packages = ["."]
-  revision = "668c6a1cb16b659ece2e90506e643ea16abc712c"
-  version = "v1.0"
-
-[[projects]]
   name = "github.com/boltdb/bolt"
   packages = ["."]
   revision = "2f1ce7a837dcb8da3ec595b1dac9d0632f0f99e8"
@@ -44,16 +38,22 @@
   revision = "d3d8c0c5c68dc6caccebb7d720f36e64bafd0a62"
 
 [[projects]]
+  name = "github.com/nlopes/slack"
+  packages = ["."]
+  revision = "c86337c0ef2486a15edd804355d9c73d2f2caed1"
+  version = "v0.1.0"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["websocket"]
+  revision = "a04bdaca5b32abe1c069418fb7088ae607de5bd0"
+
+[[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
   revision = "ebfc5b4631820b793c9010c87fd8fef0f39eb082"
-
-[[projects]]
-  branch = "v2"
-  name = "gopkg.in/robfig/cron.v2"
-  packages = ["."]
-  revision = "be2e0b0deed5a68ffee390b4583a13aff8321535"
 
 [[projects]]
   branch = "v2"
@@ -64,6 +64,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "070f923dcd53f29342cde4f478a222e2ee04f5edc86e470cd20640ce49d66563"
+  inputs-digest = "72752c7a03de1598597037e14a77ce7a2f7065542f5adfda65073adbb2d4cbba"
   solver-name = "gps-cdcl"
   solver-version = 1

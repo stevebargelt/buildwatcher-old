@@ -5,15 +5,12 @@ import (
 	"time"
 
 	"github.com/boltdb/bolt"
-	"gopkg.in/robfig/cron.v2"
 )
 
 type Controller struct {
-	store      *Store
-	cronRunner *cron.Cron
-	cronIDs    map[string]cron.EntryID
-	config     Config
-	state      *State
+	store  *Store
+	config Config
+	state  *State
 }
 
 func New(config Config) (*Controller, error) {
@@ -24,11 +21,9 @@ func New(config Config) (*Controller, error) {
 
 	store := NewStore(db)
 	c := &Controller{
-		store:      store,
-		state:      NewState(config, store),
-		cronRunner: cron.New(),
-		cronIDs:    make(map[string]cron.EntryID),
-		config:     config,
+		store:  store,
+		state:  NewState(config, store),
+		config: config,
 	}
 	return c, nil
 }
@@ -36,7 +31,7 @@ func New(config Config) (*Controller, error) {
 func (c *Controller) CreateBuckets() error {
 	buckets := []string{
 		LightsBucket,
-		JobBucket,
+		ProjectBucket,
 		UptimeBucket,
 	}
 	for _, bucket := range buckets {
@@ -53,16 +48,11 @@ func (c *Controller) Start() error {
 	}
 	c.logStartTime()
 	c.state.Bootup()
-	c.cronRunner.Start()
-	if err := c.loadAllJobs(); err != nil {
-		return err
-	}
 	log.Println("Started Controller")
 	return nil
 }
 
 func (c *Controller) Stop() error {
-	c.cronRunner.Stop()
 	c.state.TearDown()
 	c.store.Close()
 	c.logStopTime()

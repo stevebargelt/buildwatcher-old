@@ -112,18 +112,3 @@ func (c *Controller) LightOff(id string) error {
 // 	fmt.Fprint(w, string(retjs))
 
 // }
-
-// //GetLight - returns the information for a single light
-// func GetLight(rw http.ResponseWriter, req *http.Request) {
-
-// 	vars := mux.Vars(req)
-// 	light := Lights[vars["id"]]
-
-// 	js, err := json.Marshal(light)
-// 	if err != nil {
-// 		http.Error(rw, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	}
-
-// 	fmt.Fprint(rw, string(js))
-// }

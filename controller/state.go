@@ -7,8 +7,9 @@ import (
 )
 
 type State struct {
-	config Config
-	store  *Store
+	config   Config
+	upOrDown bool
+	store    *Store
 }
 
 func NewState(c Config, store *Store) *State {
@@ -19,6 +20,7 @@ func NewState(c Config, store *Store) *State {
 }
 
 func (s *State) Bootup() error {
+
 	if s.config.EnableGPIO {
 		log.Println("Enabled GPIO subsystem")
 		embd.InitGPIO()
@@ -31,4 +33,5 @@ func (s *State) TearDown() {
 		embd.CloseGPIO()
 		log.Println("Stopping GPIO subsystem")
 	}
+	log.Println("Stopping Slack subsystem")
 }
