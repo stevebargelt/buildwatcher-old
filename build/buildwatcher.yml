@@ -19,17 +19,17 @@ api:
   address: ":9002"
   enable_auth: false
   auth:
-    id: 35adsjfaksjfdhks5eun435b.apps.googleusercontent.com
+    id: URL
     secret: adqwieuqiwue
-    callback_url: http://localhost:8088/auth/callback/google
+    callback_url: http://localhost
     domain: example.com
     users:
       - foobar
     gomni_auth_secret: sadfhsadfkh238asdf
   interface: eth0
 slack:
-  slack_token: "xoxb-253656646673-3NyjH5qk9ncAPToViwXukw9a"
-  slack_channel: "C14N98WNT"
+  slack_token: "xoxb-FAKE"
+  slack_channel: "CHANNEL"
 
 # // Red    "12" //GPIO18
 # // Yellow "18" //GPIO24
