@@ -15,9 +15,13 @@ import (
 	"github.com/stevebargelt/buildwatcher/slack"
 )
 
+//Version is the version... not implemented yet
 var Version string
 
 func main() {
+
+	status := SUCCESS
+	fmt.Println(status)
 
 	//create your file with desired read/write permissions
 	f, err := os.OpenFile("buildwatcher.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
