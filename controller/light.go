@@ -80,35 +80,22 @@ func (c *Controller) LightOff(id string) error {
 
 }
 
-// //AddLight - adds a light to the system
-// func (c *Controller) AddLight(w http.ResponseWriter, req *http.Request) {
+func (c *Controller) CreateLight(light Light) error {
 
-// 	light := new(Light)
+	log.Println("Entering AddLight")
+	fn := func(id string) interface{} {
+		light.ID = id
+		tempDPin, err := embd.NewDigitalPin(light.GPIO)
+		if err != nil {
+			log.Printf("light.go: creating new dpin bombed\n")
+			panic(err)
+		}
+		light.Dpin = tempDPin
 
-// 	dec := json.NewDecoder(req.Body)
-// 	err := dec.Decode(&light)
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	}
-
-// 	Lights[light.ID] = light
-
-// 	light.dpin, err = embd.NewDigitalPin(light.GPIO)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-
-// 	if err := light.dpin.SetDirection(embd.Out); err != nil {
-// 		log.Println("light.dpin.SetDirection(embd.Out) failed - just a warning")
-// 	}
-
-// 	retjs, err := json.Marshal(light)
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	}
-
-// 	fmt.Fprint(w, string(retjs))
-
-// }
+		if err := light.Dpin.SetDirection(embd.Out); err != nil {
+			log.Printf("light.go: light.dpin.SetDirection(embd.Out) failed - just a warning\n")
+		}
+		return light
+	}
+	return c.store.Create(LightsBucket, fn)
+}

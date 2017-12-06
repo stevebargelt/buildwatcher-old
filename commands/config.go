@@ -3,7 +3,6 @@ package main
 import (
 	"io/ioutil"
 
-	"github.com/kidoman/embd"
 	"github.com/stevebargelt/buildwatcher/api"
 	"github.com/stevebargelt/buildwatcher/controller"
 	"github.com/stevebargelt/buildwatcher/slack"
@@ -32,15 +31,15 @@ func ParseConfig(filename string) (*Config, error) {
 		return nil, err
 	}
 
-	// add the embd digital pins for each light that is configured
-	for k, l := range c.Controller.Lights {
-		l.ID = k
-		c.Controller.Lights[l.ID] = l
-		l.Dpin, err = embd.NewDigitalPin(l.GPIO)
-		if err != nil {
-			panic(err)
-		}
+	// // add the embd digital pins for each light that is configured
+	// for _, l := range c.Controller.Lights {
+	// 	// l.ID = k
+	// 	// c.Controller.Lights[l.ID] = l
+	// 	l.Dpin, err = embd.NewDigitalPin(l.GPIO)
+	// 	if err != nil {
+	// 		panic(err)
+	// 	}
 
-	}
+	// }
 	return &c, nil
 }

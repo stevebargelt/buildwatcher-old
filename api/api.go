@@ -27,7 +27,7 @@ func NewAPIHandler(c *controller.Controller) http.Handler {
 	}
 
 	// Lights
-	//router.HandleFunc("/api/lights", handler.AddLight).Methods("POST")
+	router.HandleFunc("/api/lights", handler.CreateLight).Methods("POST")
 	router.HandleFunc("/api/lights/{id}/on", handler.LightOn).Methods("POST")
 	router.HandleFunc("/api/lights/{id}/off", handler.LightOff).Methods("POST")
 	router.HandleFunc("/api/lights/{color}", handler.GetLight).Methods("GET")
@@ -100,6 +100,7 @@ func (h *APIHandler) jsonCreateResponse(i interface{}, fn func() error, w http.R
 		return
 	}
 	if err := fn(); err != nil {
+		log.Println("Error: Failed to create")
 		errorResponse(http.StatusInternalServerError, "Failed to create. Error: "+err.Error(), w)
 		return
 	}

@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strings"
 
 	"github.com/nlopes/slack"
 	"github.com/stevebargelt/buildwatcher/controller"
@@ -28,7 +29,6 @@ func NewSlack(c *controller.Controller, slackConfig Config) *Slack {
 func (s *Slack) StartSlack() {
 	s.stopCh = make(chan struct{})
 	log.Println("Starting Slack")
-	fmt.Printf("TOKEN: %s\n\n", s.config.SlackToken)
 	slackAPI := slack.New(s.config.SlackToken)
 	f, err := os.OpenFile("slackapi.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
@@ -47,7 +47,6 @@ func (s *Slack) StartSlack() {
 	for {
 		select {
 		case msg := <-rtm.IncomingEvents:
-			//fmt.Print("Event Received:\n\n")
 			switch ev := msg.Data.(type) {
 			case *slack.HelloEvent:
 				// Ignore hello
@@ -56,13 +55,7 @@ func (s *Slack) StartSlack() {
 				log.Printf("Connection counter: %v\n\n", ev.ConnectionCount)
 				rtm.SendMessage(rtm.NewOutgoingMessage("Build Watcher Connected", s.config.SlackChannel))
 			case *slack.MessageEvent:
-				parseMessage(ev)
-				// if Match(ev, "(?i)green(.*)") {
-				// 	s.c.LightOn("green")
-				// }
-				// if Match(ev, "(?i)red(.*)") {
-				// 	s.c.LightOn("red")
-				// }
+				s.parseMessage(ev)
 			case *slack.RTMError:
 				log.Printf("Error: %s\n", ev.Error())
 			case *slack.InvalidAuthEvent:
@@ -70,7 +63,6 @@ func (s *Slack) StartSlack() {
 				break
 			default:
 				// Ignore other events..
-				// fmt.Printf("Unexpected: %v\n", msg.Data)
 			}
 		case <-s.stopCh:
 			log.Println("Stopping Slack listener")
@@ -89,65 +81,80 @@ func (s *Slack) Stop() {
 	log.Println("Stopped Slack")
 }
 
-func parseMessage(ev *slack.MessageEvent) {
+func (s *Slack) parseMessage(ev *slack.MessageEvent) {
 
-	var statusRegEx = regexp.MustCompile(`(?i)status=\w*`)
+	greenStatus := map[string]bool{
+		"passed":    true,
+		"success":   true,
+		"succeeded": true,
+	}
+	yellowStatus := map[string]bool{
+		"building": true,
+		"started":  true,
+	}
+	redStatus := map[string]bool{
+		"failed":  true,
+		"failure": true,
+		"failing": true,
+	}
+
+	var statusRegEx = `(?i)status=\w*`
+	var jobRegex = `(?i)job=\w*`
+	var buildRegex = `(?i)build=\w*`
+	var URLRegex = `(?i)url=(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$`
 
 	message := fmt.Sprintf("%v", ev.Msg)
-	if statusRegEx.MatchString(message) {
-		fmt.Printf("Found Status: %v\n\n\n", statusRegEx.FindString(message))
-	}
-	// fmt.Println("\n\nALL THE INFO FROM parseMessage")
-	// fmt.Printf("ev.Name: %s\n", ev.Msg.Name)
-	// fmt.Printf("ev.BotID: %s\n", ev.Msg.BotID)
-	// fmt.Printf("ev.User: %s\n", ev.Msg.User)
-	// fmt.Printf("ev.Username: %s\n", ev.Msg.Username)
-	// fmt.Printf("ev.Type: %s\n", ev.Msg.Type)
-	// fmt.Printf("ev.Msg.Text: %s\n", ev.Msg.Text)
-	// fmt.Printf("ev.Msg.Topic: %s\n", ev.Msg.Topic)
-	// fmt.Printf("ev.Msg.Comment: %s\n", ev.Msg.Comment)
-	// fmt.Printf("ev.Msg.Attachments: %v\n\n", ev.Msg.Attachments)
-	// if len(ev.Msg.Attachments) > 0 {
-	// 	fmt.Printf("ev.Msg.Attachments.Text: %v\n\n", ev.Msg.Attachments[0].Text)
+	status := matcher(message, statusRegEx)
+	job := matcher(message, jobRegex)
+	build := matcher(message, buildRegex)
+	URL := matcher(message, URLRegex)
 
-	// 	if len(ev.Msg.Attachments[0].Fields) > 0 {
-	// 		fmt.Printf("Breaking it down...\n")
+	fmt.Printf("\n\nstatus:%v,job:%v,build:%v,url:%v\n\n", status, job, build, URL)
 
-	// 		for k, v := range ev.Msg.Attachments[0].Fields {
-	// 			fmt.Printf("ev.Msg.Attachments[0].Field[%v]: %v\n", k, v)
-	// 			fmt.Printf("ev.Msg.Attachments[0].Field[%v].Value: %v\n", k, v.Value)
-	// 		}
-
-	// 		m := make(map[string]string)
-	// 		text := ev.Msg.Attachments[0].Fields[0].Value
-	// 		fields := strings.Split(text, ",")
-
-	// 		for _, pair := range fields {
-	// 			z := strings.Split(pair, "=")
-	// 			z[0] = strings.TrimSuffix(z[0], ", ")
-	// 			z[1] = strings.TrimSpace(z[1])
-	// 			m[z[0]] = z[1]
-	// 		}
-
-	// 		fmt.Printf("\n\nThe MAP\n")
-	// 		for a, b := range m {
-	// 			fmt.Printf("a=%v, b=%v\n", a, b)
-	// 		}
-	// 	}
+	// proj, err := s.c.GetProject(job)
+	// if err != nil {
+	// 	log.Printf("Slack.go: Error trying to get project")
+	// 	panic(err)
 	// }
 
+	// fmt.Printf("Project:%v|EOL", proj)
+
+	if greenStatus[strings.ToLower(status)] {
+		fmt.Printf("Green, baby\n")
+		//s.c.LightOn("green")
+	}
+
+	if redStatus[strings.ToLower(status)] {
+		fmt.Printf("Red, oh no\n")
+		//s.c.LightOn("red")
+	}
+
+	if yellowStatus[strings.ToLower(status)] {
+		fmt.Printf("Yellow, fingers crossed\n")
+		//s.c.LightOn("yellow")
+	}
+
 	// Jenkins
-	// ev.Name:
 	// ev.BotID: B7FDY3PJM
-	// ev.User:
-	// ev.Username:
-	// ev.Type: message
 
 	// Travis
-	// ev.Name:
 	// ev.BotID: B74V30W7J
-	// ev.User:
-	// ev.Username:
-	// ev.Type: message
 
+}
+
+func matcher(message string, match string) string {
+
+	var kv []string
+
+	theregex := regexp.MustCompile(match)
+	if theregex.MatchString(message) {
+		found := theregex.FindString(message)
+		kv = strings.Split(found, "=")
+		fmt.Printf("The key is: %v\n", kv[0])
+		fmt.Printf("The value is: %v\n", kv[1])
+	} else {
+		fmt.Printf("No match Found\n")
+		return ""
+	}
+	return kv[1]
 }

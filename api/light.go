@@ -39,13 +39,13 @@ func (h *APIHandler) LightOff(w http.ResponseWriter, r *http.Request) {
 	h.jsonToggleResponse(&l, fn, w, r)
 }
 
-// func (h *APIHandler) AddLight(w http.ResponseWriter, r *http.Request) {
-// 	var l controller.Light
-// 	fn := func() error {
-// 		return h.controller.AddLight(l)
-// 	}
-// 	h.jsonCreateResponse(&l, fn, w, r)
-// }
+func (h *APIHandler) CreateLight(w http.ResponseWriter, r *http.Request) {
+	var l controller.Light
+	fn := func() error {
+		return h.controller.CreateLight(l)
+	}
+	h.jsonCreateResponse(&l, fn, w, r)
+}
 
 // func (h *APIHandler) ConfigureLight(w http.ResponseWriter, r *http.Request) {
 // 	fn := func(id string) error {
