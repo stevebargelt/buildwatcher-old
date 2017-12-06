@@ -21,10 +21,8 @@ var _STATUS = map[string]Status{
 	"yellow_anime":   BUILDING_FROM_UNSTABLE,
 }
 
-//jenkinsClient *gojenkins.Jenkins
-
-//InitClient initializes the Jenkins client - connects to jenkins instance
-func InitClient(jenkinsURL string, username string, password string) (*gojenkins.Jenkins, error) {
+//NewJenkins initializes the Jenkins client - connects to jenkins instance
+func NewJenkins(jenkinsURL string, username string, password string) (*gojenkins.Jenkins, error) {
 	jenkins, err := gojenkins.CreateJenkins(jenkinsURL, username, password).Init()
 	return jenkins, err
 }

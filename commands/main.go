@@ -18,6 +18,8 @@ import (
 //Version is the version... not implemented yet
 var Version string
 
+jenkinsClient *gojenkins.Jenkins
+
 func main() {
 
 	status := SUCCESS
@@ -69,6 +71,9 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Initialize Jenkins
+	jenk := ciserver.jenkins.NewJenkins(c, config.Jenkins)
+	
 	// Initialize the Slack controller
 	sl := slack.NewSlack(c, config.Slack)
 	go sl.StartSlack()
