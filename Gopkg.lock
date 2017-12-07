@@ -20,6 +20,12 @@
   revision = "79e699ccd02f240a1f1fbbdcee7e64c1c12e41aa"
 
 [[projects]]
+  name = "github.com/fsnotify/fsnotify"
+  packages = ["."]
+  revision = "629574ca2a5df945712d3079857300b5e4da0236"
+  version = "v1.4.2"
+
+[[projects]]
   branch = "master"
   name = "github.com/golang/glog"
   packages = ["."]
@@ -39,15 +45,69 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/hashicorp/hcl"
+  packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
+  revision = "23c074d0eceb2b8a5bfdbb271ab780cde70f05a8"
+
+[[projects]]
+  branch = "master"
   name = "github.com/kidoman/embd"
   packages = [".","host/generic","host/rpi"]
   revision = "d3d8c0c5c68dc6caccebb7d720f36e64bafd0a62"
+
+[[projects]]
+  name = "github.com/magiconair/properties"
+  packages = ["."]
+  revision = "be5ece7dd465ab0765a9682137865547526d1dfb"
+  version = "v1.7.3"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/mitchellh/mapstructure"
+  packages = ["."]
+  revision = "06020f85339e21b2478f756a78e295255ffa4d6a"
 
 [[projects]]
   name = "github.com/nlopes/slack"
   packages = ["."]
   revision = "c86337c0ef2486a15edd804355d9c73d2f2caed1"
   version = "v0.1.0"
+
+[[projects]]
+  name = "github.com/pelletier/go-toml"
+  packages = ["."]
+  revision = "16398bac157da96aa88f98a2df640c7f32af1da2"
+  version = "v1.0.1"
+
+[[projects]]
+  name = "github.com/spf13/afero"
+  packages = [".","mem"]
+  revision = "8d919cbe7e2627e417f3e45c3c0e489a5b7e2536"
+  version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/spf13/cast"
+  packages = ["."]
+  revision = "acbeb36b902d72a7a4c18e8f3241075e7ab763e4"
+  version = "v1.1.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/spf13/jwalterweatherman"
+  packages = ["."]
+  revision = "12bd96e66386c1960ab0f74ced1362f66f552f7b"
+
+[[projects]]
+  name = "github.com/spf13/pflag"
+  packages = ["."]
+  revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
+  version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/spf13/viper"
+  packages = ["."]
+  revision = "25b30aa063fc18e48662b86996252eabdcf2f0c7"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
@@ -62,6 +122,12 @@
   revision = "ebfc5b4631820b793c9010c87fd8fef0f39eb082"
 
 [[projects]]
+  branch = "master"
+  name = "golang.org/x/text"
+  packages = ["internal/gen","internal/triegen","internal/ucd","transform","unicode/cldr","unicode/norm"]
+  revision = "57961680700a5336d15015c8c50686ca5ba362a4"
+
+[[projects]]
   branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
@@ -70,6 +136,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4cc0d12b31e4b38e16472d2b91b6cee8ff75508893da400ba76d35b4d11fc0b5"
+  inputs-digest = "2f4d8a3cd88e5928e8c6be8a5bb52121a43b5aba3ce74f2a9b515fe8dbaaaeb3"
   solver-name = "gps-cdcl"
   solver-version = 1

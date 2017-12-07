@@ -1,4 +1,3 @@
----
 controller:
   enable_gpio: true
   database: "buildwatcher.db"
@@ -28,7 +27,8 @@ api:
     gomni_auth_secret: sadfhsadfkh238asdf
   interface: eth0
 ciservers:
-  - name: "Local Jenkins"
+  server1:
+    name: "Local Jenkins"
     type: "jenkins"
     url: "http://localhost:8080"
     pollrate: 3
@@ -37,7 +37,8 @@ ciservers:
         branch: "master"
       - name: "shoppingcart-aspnetcore"
         branch: "master"
-  - name: "Distant Jenkins"
+  server2:
+    name: "Distant Jenkins"
     type: "jenkins"
     url: "http://localhost:9090"
     pollrate: 3

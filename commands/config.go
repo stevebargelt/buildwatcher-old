@@ -1,13 +1,13 @@
 package main
 
 import (
-	"io/ioutil"
+	"fmt"
 
+	"github.com/spf13/viper"
 	"github.com/stevebargelt/buildwatcher/api"
 	"github.com/stevebargelt/buildwatcher/ciserver"
 	"github.com/stevebargelt/buildwatcher/controller"
 	"github.com/stevebargelt/buildwatcher/slack"
-	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
@@ -17,23 +17,17 @@ type Config struct {
 	CiServer   ciserver.Config   `yaml:"ciservers"`
 }
 
-// var DefaultConfig = Config{
-// 	Controller: controller.DefaultConfig,
-// 	API:        api.DefaultConfig,
-// 	Slack:      slack.DefaultConfig,
-// 	//CiServer: ciserver
-// }
-
 func ParseConfig(filename string) (*Config, error) {
-	var c Config
-	content, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-	if err := yaml.Unmarshal(content, &c); err != nil {
-		return nil, err
-	}
 
+	var c Config
+	err := viper.Unmarshal(&c)
+	if err != nil {
+		panic(fmt.Errorf("unable to decode into struct, %v", err))
+
+	}
+	
+	fmt.Println(c)
+	//fmt.Println(c.CiServer.CiServers[0].Name)
 	// // add the embd digital pins for each light that is configured
 	// for _, l := range c.Controller.Lights {
 	// 	// l.ID = k

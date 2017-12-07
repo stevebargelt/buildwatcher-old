@@ -16,19 +16,6 @@ type Config struct {
 	} `yaml:"ciservers"`
 }
 
-// var DefaultConfig = Config{
-// 	ci_server: [ "jenkins",
-// 		"http://localhost:8080",
-// 		"",
-// 		"",
-// 		3
-// 	],
-// 	jobs[
-// 		name:   "test",
-// 		branch: "master",
-// 	],
-// }
-
 // "light": {
 //     "type": "console",
 //     "num_leds": 32

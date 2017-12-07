@@ -1,0 +1,72 @@
+{
+  "controller": {
+    "enable_gpio": true,
+    "database": "buildwatcher.db",
+    "lights": {
+      "red": {
+        "gpio": 18,
+        "color": "red",
+        "desc": "Red LED Light for build failures"
+      },
+      "yellow": {
+        "gpio": 24,
+        "color": "yellow",
+        "desc": "yellow LED Light for failed build that are rebuilding"
+      },
+      "green": {
+        "gpio": 27,
+        "color": "green",
+        "desc": "Green LED Light for Builds Are Succeeding"
+      }
+    }
+  },
+  "api": {
+    "address": ":9002",
+    "enable_auth": false,
+    "auth": {
+      "id": "URL",
+      "secret": "adqwieuqiwue",
+      "callback_url": "http://localhost",
+      "domain": "example.com",
+      "users": [
+        "foobar"
+      ],
+      "gomni_auth_secret": "sadfhsadfkh238asdf"
+    },
+    "interface": "eth0"
+  },
+  "ciservers": [
+    {
+      "name": "Local Jenkins",
+      "type": "jenkins",
+      "url": "http://localhost:8080",
+      "pollrate": 3,
+      "jobs": [
+        {
+          "name": "test",
+          "branch": "master"
+        },
+        {
+          "name": "shoppingcart-aspnetcore",
+          "branch": "master"
+        }
+      ]
+    },
+    {
+      "name": "Distant Jenkins",
+      "type": "jenkins",
+      "url": "http://localhost:9090",
+      "pollrate": 3,
+      "jobs": [
+        {
+          "name": "testjob",
+          "branch": "master"
+        },
+        {
+          "name": "shoppingcart-aspnetcore",
+          "branch": "master"
+        }
+      ]
+    }
+  ]
+}

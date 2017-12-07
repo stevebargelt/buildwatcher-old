@@ -3,6 +3,7 @@ package ciserver
 import (
 	"log"
 	"os"
+	"time"
 
 	"github.com/bndr/gojenkins"
 	"github.com/stevebargelt/buildwatcher/controller"
@@ -38,44 +39,42 @@ func NewJenkins(c *controller.Controller, jenkinsConfig Config) *Jenkins {
 	}
 }
 
-//NewJenkins initializes the Jenkins client - connects to jenkins instance
-func OldStartJenkins(jenkinsURL string, username string, password string) (*gojenkins.Jenkins, error) {
-	jenkins, err := gojenkins.CreateJenkins(jenkinsURL, username, password).Init()
-	return jenkins, err
-}
-
 func (j *Jenkins) StartJenkins() {
 	j.stopCh = make(chan struct{})
 	log.Println("Starting Jenkins")
 	//test := j.config.CiServers[0].URL
-	jenkins, err := gojenkins.CreateJenkins(j.config.CiServers[0].URL, j.config.CiServers[0].Username, j.config.CiServers[0].Password).Init()
+	jenkins, _ := gojenkins.CreateJenkins(j.config.CiServers[0].URL, j.config.CiServers[0].Username, j.config.CiServers[0].Password).Init()
 	f, err := os.OpenFile("jenkins.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer f.Close()
 
-	jenkins.
 	job, _ := jenkins.GetJob(j.config.CiServers[0].Jobs[0].Name)
-	job.
-	job.Poll()
 
-	//logger := log.New(f, "jenkins: ", log.Lshortfile|log.LstdFlags)
-
-	// slackAPI.SetDebug(true)
-
-	// rtm := slackAPI.NewRTM()
-
-	//go rtm.ManageConnection()
-
-	for {
-		select {
-		//case msg := <-rtm.IncomingEvents:
-
-		case <-j.stopCh:
-			log.Println("Stopping Jenkins polling")
-			return
+	ticker := time.NewTicker(time.Millisecond * 10000)
+	go func() {
+		for t := range ticker.C {
+			job.Poll()
+			status := _STATUS[job.GetDetails().Color]
+			log.Println("Status = ", status)
+			log.Println("Tick at = ", t)
 		}
+	}()
+
+	select {
+	case <-j.stopCh:
+		log.Println("Stopping Slack polling")
+		return
 	}
 
+}
+
+func (j *Jenkins) Stop() {
+	if j.stopCh == nil {
+		log.Println("WARNING: stop channel is not initialized.")
+		return
+	}
+	j.stopCh <- struct{}{}
+	log.Println("Stopped Jenkins")
 }

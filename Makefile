@@ -14,21 +14,10 @@ pi-zero:
 
 .PHONY:deploy
 deploy:
-	scp bin/buildwatcher pi@192.168.1.6:buildwatcher
-	scp bin/config.yml pi@192.168.1.6:config.yml
+	scp bin/buildwatcher pi@192.168.1.42:buildwatcher
+	scp bin/config.yml pi@192.168.1.42:config.yml
 test:
 	go test -cover -v -race ./...
-
-# .PHONY: go-get
-# go-get:
-# 	go get -u github.com/boltdb/bolt/...
-# 	go get -u gopkg.in/yaml.v2
-# 	go get -u github.com/stretchr/gomniauth
-# 	go get -u github.com/stretchr/gomniauth/providers/google
-# 	go get -u github.com/kidoman/embd
-# 	go get -u github.com/gorilla/mux
-# 	go get -u github.com/dustin/go-humanize
-# 	go get -u github.com/ranjib/adafruitio
 
 .PHONY: vet
 vet:

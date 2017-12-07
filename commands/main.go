@@ -10,10 +10,10 @@ import (
 	"syscall"
 
 	_ "github.com/kidoman/embd/host/rpi" // This loads the RPi driver
+	"github.com/spf13/viper"
 	"github.com/stevebargelt/buildwatcher/api"
 	"github.com/stevebargelt/buildwatcher/ciserver"
 	"github.com/stevebargelt/buildwatcher/controller"
-	"github.com/stevebargelt/buildwatcher/slack"
 )
 
 //Version is the version... not implemented yet
@@ -49,13 +49,32 @@ func main() {
 		fmt.Println(Version)
 		return
 	}
-	config := &DefaultConfig
-	if *configFile != "" {
-		conf, err := ParseConfig(*configFile)
-		if err != nil {
-			log.Fatal("Failed to parse config file", err)
-		}
-		config = conf
+
+	viper.SetConfigName("config")
+	viper.AddConfigPath(".")
+	err = viper.ReadInConfig()
+	if err != nil {
+		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+	}
+	// viper.WatchConfig()
+	// viper.OnConfigChange(func(e fsnotify.Event) {
+	// 	fmt.Println("Config file changed:", e.Name)
+	// })
+
+	servers := viper.GetStringMapString("ciservers")
+	fmt.Println("servers:")
+	fmt.Println(servers)
+	test := servers["server1"]
+	fmt.Println("test server1:")
+	fmt.Println(test)
+
+	jobs1 := viper.GetStringMapString("ciservers:serve1:jobs")
+	fmt.Println("jobs1:")
+	fmt.Println(jobs1)
+	//viper.GetString("")
+	config, err := ParseConfig(*configFile)
+	if err != nil {
+		log.Fatal("Failed to parse config file", err)
 	}
 
 	// Initialize the controller
@@ -66,14 +85,14 @@ func main() {
 	if err := c.Start(); err != nil {
 		log.Fatal(err)
 	}
-
 	// Initialize Jenkins
-	jenk := ciserver.NewJenkins(c, config.Jenkins)
+	jenk := ciserver.NewJenkins(c, config.CiServer)
+	go jenk.StartJenkins()
+	log.Println("Starting Jenkins polling")
 
-	// Initialize the Slack controller
-	sl := slack.NewSlack(c, config.Slack)
-	go sl.StartSlack()
-	log.Println("Starting Slack subsystem")
+	// // Initialize the Slack controller
+	// sl := slack.NewSlack(c, config.Slack)
+	// go sl.StartSlack()
 
 	//Initialize the API server
 	if err := api.SetupServer(config.API, c); err != nil {
@@ -88,7 +107,7 @@ func main() {
 			switch s {
 			case os.Interrupt:
 				c.Stop()
-				sl.Stop()
+				jenk.Stop()
 				return
 				// case syscall.SIGUSR2:
 				// 	c.DumpTelemetry()
