@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 
 	"github.com/stevebargelt/buildwatcher/api"
+	"github.com/stevebargelt/buildwatcher/ciserver"
 	"github.com/stevebargelt/buildwatcher/controller"
 	"github.com/stevebargelt/buildwatcher/slack"
 	"gopkg.in/yaml.v2"
@@ -13,13 +14,15 @@ type Config struct {
 	Controller controller.Config `yaml:"controller"`
 	API        api.ServerConfig  `yaml:"api"`
 	Slack      slack.Config      `yaml:"slack"`
+	CiServer   ciserver.Config   `yaml:"ciservers"`
 }
 
-var DefaultConfig = Config{
-	Controller: controller.DefaultConfig,
-	API:        api.DefaultConfig,
-	Slack:      slack.DefaultConfig,
-}
+// var DefaultConfig = Config{
+// 	Controller: controller.DefaultConfig,
+// 	API:        api.DefaultConfig,
+// 	Slack:      slack.DefaultConfig,
+// 	//CiServer: ciserver
+// }
 
 func ParseConfig(filename string) (*Config, error) {
 	var c Config

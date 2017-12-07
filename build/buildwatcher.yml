@@ -27,9 +27,25 @@ api:
       - foobar
     gomni_auth_secret: sadfhsadfkh238asdf
   interface: eth0
-slack:
-  slack_token: "xoxb-FAKE"
-  slack_channel: "CHANNEL"
+ciservers:
+  - name: "Local Jenkins"
+    type: "jenkins"
+    url: "http://localhost:8080"
+    pollrate: 3
+    jobs:
+      - name: "test"
+        branch: "master"
+      - name: "shoppingcart-aspnetcore"
+        branch: "master"
+  - name: "Distant Jenkins"
+    type: "jenkins"
+    url: "http://localhost:9090"
+    pollrate: 3
+    jobs:
+      - name: "testjob"
+        branch: "master"
+      -name: "shoppingcart-aspnetcore"
+        branch: "master"
 
 # // Red    "12" //GPIO18
 # // Yellow "18" //GPIO24

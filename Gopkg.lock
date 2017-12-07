@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/bndr/gojenkins"
+  packages = ["."]
+  revision = "668c6a1cb16b659ece2e90506e643ea16abc712c"
+  version = "v1.0"
+
+[[projects]]
   name = "github.com/boltdb/bolt"
   packages = ["."]
   revision = "2f1ce7a837dcb8da3ec595b1dac9d0632f0f99e8"
@@ -64,6 +70,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "72752c7a03de1598597037e14a77ce7a2f7065542f5adfda65073adbb2d4cbba"
+  inputs-digest = "4cc0d12b31e4b38e16472d2b91b6cee8ff75508893da400ba76d35b4d11fc0b5"
   solver-name = "gps-cdcl"
   solver-version = 1

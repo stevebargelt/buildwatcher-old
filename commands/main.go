@@ -11,6 +11,7 @@ import (
 
 	_ "github.com/kidoman/embd/host/rpi" // This loads the RPi driver
 	"github.com/stevebargelt/buildwatcher/api"
+	"github.com/stevebargelt/buildwatcher/ciserver"
 	"github.com/stevebargelt/buildwatcher/controller"
 	"github.com/stevebargelt/buildwatcher/slack"
 )
@@ -18,12 +19,7 @@ import (
 //Version is the version... not implemented yet
 var Version string
 
-jenkinsClient *gojenkins.Jenkins
-
 func main() {
-
-	status := SUCCESS
-	fmt.Println(status)
 
 	//create your file with desired read/write permissions
 	f, err := os.OpenFile("buildwatcher.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
@@ -72,8 +68,10 @@ func main() {
 	}
 
 	// Initialize Jenkins
-	jenk := ciserver.jenkins.NewJenkins(c, config.Jenkins)
-	
+	//var jenkinsClient *gojenkins.Jenkins
+	jenk := ciserver.NewJenkins()
+	jenk := ciserver.NewJenkins(c, config.Jenkins)
+
 	// Initialize the Slack controller
 	sl := slack.NewSlack(c, config.Slack)
 	go sl.StartSlack()
