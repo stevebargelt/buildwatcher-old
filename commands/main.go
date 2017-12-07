@@ -68,8 +68,6 @@ func main() {
 	}
 
 	// Initialize Jenkins
-	//var jenkinsClient *gojenkins.Jenkins
-	jenk := ciserver.NewJenkins()
 	jenk := ciserver.NewJenkins(c, config.Jenkins)
 
 	// Initialize the Slack controller

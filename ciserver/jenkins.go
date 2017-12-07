@@ -55,7 +55,9 @@ func (j *Jenkins) StartJenkins() {
 	}
 	defer f.Close()
 
+	jenkins.
 	job, _ := jenkins.GetJob(j.config.CiServers[0].Jobs[0].Name)
+	job.
 	job.Poll()
 
 	//logger := log.New(f, "jenkins: ", log.Lshortfile|log.LstdFlags)

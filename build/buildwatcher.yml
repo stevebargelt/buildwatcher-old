@@ -44,7 +44,7 @@ ciservers:
     jobs:
       - name: "testjob"
         branch: "master"
-      -name: "shoppingcart-aspnetcore"
+      - name: "shoppingcart-aspnetcore"
         branch: "master"
 
 # // Red    "12" //GPIO18
